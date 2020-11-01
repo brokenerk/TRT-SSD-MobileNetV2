@@ -1,4 +1,4 @@
-TensorRT Python Sample for a Re-Trained SSD MobileNet V2 Model (only Faces detection)
+TensorRT Python Sample for a Re-Trained SSD MobileNet V2 Model (only faces' detection)
 ======================================
 ### Original GiHub repository: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
 </br>
@@ -18,11 +18,15 @@ Since the optimization of preprocessing is not ready yet, image read/write time 
 </br>
 </br>
 
-## Install dependencies
+## Install Tensorflow 1 dependencies and PyCUDA
 
 ```C
-$ sudo apt-get install python3-pip libhdf5-serial-dev hdf5-tools
-$ pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 'tensorflow<2'
+$ sudo apt-get update
+$ sudo apt-get install libhdf5-serial-dev hdf5-tools libhdf5-dev zlib1g-dev zip libjpeg8-dev liblapack-dev libblas-dev gfortran
+$ sudo apt-get install python3-pip
+$ pip3 install -U pip testresources setuptools==49.6.0
+$ pip3 install -U numpy==1.16.1 future==0.18.2 mock==3.0.5 h5py==2.10.0 keras_preprocessing==1.1.1 keras_applications==1.0.8 gast==0.2.2 futures protobuf pybind11
+$ pip3 install --pre --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 'tensorflow<2'
 $ pip3 install numpy pycuda --user
 ```
 
@@ -33,16 +37,19 @@ $ pip3 install numpy pycuda --user
 
 The base object detection model is available here: <a href=https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md>TensorFlow model zoo</a>.
 </br>
-**Remember that this sample is adjusted only for re-trained (transfer learning) SSD MobileNet V2 models.**
+**Remember that this sample is adjusted only for re-trained SSD MobileNet V2 models (use the frozen_inference_graph.pb file, exported after your custom training).**
 </br>
 If original sample is required, visit: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
 
 ```C
-$ git clone https://github.com/brokenerk/TRT-SSD-Fixed.git
-$ cd TRT-SSD-Fixed
+$ git clone https://github.com/brokenerk/TRT-SSD-MobileNetV2.git
+$ cd TRT-SSD-MobileNetV2
 $ mkdir model
 $ cp [model].tar.gz model/
 $ tar zxvf model/[model].tar.gz -C model/
+// ============================================================================
+// Or just put your frozen_inference_graph.pb file inside the model/ directory
+// ============================================================================
 ```
 
 ##### Supported models:
