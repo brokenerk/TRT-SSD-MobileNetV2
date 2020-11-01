@@ -1,16 +1,20 @@
-TensorRT Python Sample for Object Detection
+TensorRT Python Sample for a Re-Trained SSD MobileNet V2 Model (only Faces detection)
 ======================================
+### Original GiHub repository: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
+</br>
+
+**Tested on a NVIDIA Jetson AGX Xavier with Jetpack 4.3 and Tensorflow 1.15.**
+
+</br>
 
 Performance includes memcpy and inference.
 </br>
 
 | Model | Input Size | TRT Nano |
 |:------|:----------:|-----------:|
-| ssd_inception_v2_coco(2017) | 300x300 | 49ms |
-| ssd_mobilenet_v1_coco | 300x300 | 36ms |
 | ssd_mobilenet_v2_coco | 300x300 | 46ms |
 
-Since the optimization of preprocessing is not ready yet, we don't include image read/write time here.
+Since the optimization of preprocessing is not ready yet, image read/write time is not included here.
 </br>
 </br>
 
@@ -18,21 +22,24 @@ Since the optimization of preprocessing is not ready yet, we don't include image
 
 ```C
 $ sudo apt-get install python3-pip libhdf5-serial-dev hdf5-tools
-$ pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v42 tensorflow-gpu==1.13.1+nv19.5 --user
+$ pip3 install --extra-index-url https://developer.download.nvidia.com/compute/redist/jp/v43 'tensorflow<2'
 $ pip3 install numpy pycuda --user
 ```
 
 </br>
 </br>
 
-## Download model
+## Prepare your pre-trained model
 
-Please download the object detection model from <a href=https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/detection_model_zoo.md>TensorFlow model zoo</a>.
+The base object detection model is available here: <a href=https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf1_detection_zoo.md>TensorFlow model zoo</a>.
 </br>
+**Remember that this sample is adjusted only for re-trained (transfer learning) SSD MobileNet V2 models.**
+</br>
+If original sample is required, visit: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
 
 ```C
-$ git clone https://github.com/AastaNV/TRT_object_detection.git
-$ cd TRT_object_detection
+$ git clone https://github.com/brokenerk/TRT-SSD-Fixed.git
+$ cd TRT-SSD-Fixed
 $ mkdir model
 $ cp [model].tar.gz model/
 $ tar zxvf model/[model].tar.gz -C model/
@@ -40,11 +47,7 @@ $ tar zxvf model/[model].tar.gz -C model/
 
 ##### Supported models:
 
-- ssd_inception_v2_coco_2017_11_17
-- ssd_mobilenet_v1_coco
 - ssd_mobilenet_v2_coco
-
-We will keep adding new model into our supported list.
 
 </br>
 </br>
@@ -54,15 +57,11 @@ We will keep adding new model into our supported list.
 Edit /usr/lib/python3.6/dist-packages/graphsurgeon/node_manipulation.py
 
 ```C
-diff --git a/node_manipulation.py b/node_manipulation.py
-index d2d012a..1ef30a0 100644
---- a/node_manipulation.py
-+++ b/node_manipulation.py
-@@ -30,6 +30,7 @@ def create_node(name, op=None, _do_suffix=False, **kwargs):
+def create_node(name, op=None, _do_suffix=False, **kwargs):
      node = NodeDef()
      node.name = name
      node.op = op if op else name
-+    node.attr["dtype"].type = 1
+     node.attr["dtype"].type = 1
      for key, val in kwargs.items():
          if key == "dtype":
              node.attr["dtype"].type = val.as_datatype_enum
@@ -79,17 +78,9 @@ $ sudo jetson_clocks
 ```
 </br>
 
-**2. Update main.py based on the model you used**
+**2. Execute**
 ```C
-from config import model_ssd_inception_v2_coco_2017_11_17 as model
-from config import model_ssd_mobilenet_v1_coco_2018_01_28 as model
-from config import model_ssd_mobilenet_v2_coco_2018_03_29 as model
-```
-</br>
-
-**3. Execute**
-```C
-$ python3 main.py [image]
+$ python3 main.py [test_image_path]
 ```
 
 It takes some time to compile a TensorRT model when the first launching.
