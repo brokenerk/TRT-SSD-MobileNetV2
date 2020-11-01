@@ -91,21 +91,22 @@ stream.synchronize()
 print("execute times "+str(time.time()-start_time))
 
 output = host_outputs[0]
-print(output)
 height, width, channels = ori.shape
+for i in range(int(len(output) / model.layout)):
+    prefix = i*model.layout
+    index = int(output[prefix+0])
+    label = int(output[prefix+1])
+    conf  = output[prefix+2]
+    xmin  = int(output[prefix+3]*width)
+    ymin  = int(output[prefix+4]*height)
+    xmax  = int(output[prefix+5]*width)
+    ymax  = int(output[prefix+6]*height)
 
-index = int(output[0])
-label = int(output[1])
-conf  = output[2]
-xmin  = int(output[3]*width)
-ymin  = int(output[4]*height)
-xmax  = int(output[5]*width)
-ymax  = int(output[6]*height)
-
-if conf > 0.8:
-    print("Detected {} with confidence {}".format(COCO_LABELS[label], "{0:.0%}".format(conf)))
-    cv2.rectangle(ori, (xmin,ymin), (xmax, ymax), (0,0,255),3)
-    cv2.putText(ori, COCO_LABELS[label],(xmin+10,ymin+10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+    if conf > 0.7:
+        print("Detected {} with confidence {}".format(COCO_LABELS[label], "{0:.0%}".format(conf)))
+        cv2.rectangle(ori, (xmin,ymin), (xmax, ymax), (0,0,255),3)
+        cv2.putText(ori, COCO_LABELS[label],(xmin+10,ymin+10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+        
 cv2.imwrite("result.jpg", ori)
 cv2.imshow("result", ori)
 cv2.waitKey(0)
