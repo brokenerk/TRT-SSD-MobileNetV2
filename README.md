@@ -1,6 +1,8 @@
 TensorRT Python Sample for a Re-Trained SSD MobileNet V2 Model (only faces' detection)
 ======================================
-### Original GiHub repository: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
+### Original NVIDIA sample's GiHub repository: <a href=https://github.com/AastaNV/TRT_object_detection>AastaNV/TRT_object_detection</a>
+
+### Original Jeroen Bédorf's tutorial: <a href=https://www.minds.ai/post/deploying-ssd-mobilenet-v2-on-the-nvidia-jetson-and-nano-platforms>Deploying SSD mobileNet V2 on the NVIDIA Jetson and Nano platforms</a>
 </br>
 
 **Tested on a NVIDIA Jetson AGX Xavier with Jetpack 4.3 and Tensorflow 1.15.**
