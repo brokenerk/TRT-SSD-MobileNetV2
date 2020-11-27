@@ -78,7 +78,7 @@ context = engine.create_execution_context()
 ori = cv2.imread(sys.argv[1])
 image = cv2.cvtColor(ori, cv2.COLOR_BGR2RGB)
 image = cv2.resize(image, (model.dims[2],model.dims[1]))
-image = (2.0/255.0) * image - 1.0
+image = (2.0/255.0) * np.float32(image) - 1.0
 image = image.transpose((2, 0, 1))
 np.copyto(host_inputs[0], image.ravel())
 
@@ -102,11 +102,14 @@ for i in range(int(len(output) / model.layout)):
     xmax  = int(output[prefix+5]*width)
     ymax  = int(output[prefix+6]*height)
 
-    if conf > 0.7:
+    if conf >= 0.5:
         print("Detected {} with confidence {}".format(COCO_LABELS[label], "{0:.0%}".format(conf)))
-        cv2.rectangle(ori, (xmin,ymin), (xmax, ymax), (0,0,255),3)
+        cv2.rectangle(ori, (xmin,ymin), (xmax, ymax), (0,255,0),5)
         cv2.putText(ori, COCO_LABELS[label],(xmin+10,ymin+10), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
-        
+
+cv2.namedWindow("Result",cv2.WINDOW_NORMAL)
+cv2.resizeWindow("Result", 700, 500)
+
 cv2.imwrite("result.jpg", ori)
-cv2.imshow("result", ori)
+cv2.imshow("Result", ori)
 cv2.waitKey(0)

@@ -1,7 +1,7 @@
 
 COCO_CLASSES_LIST = [
     'unlabeled',
-    'person',
+    'face',
     'bicycle',
     'car',
     'motorcycle',
