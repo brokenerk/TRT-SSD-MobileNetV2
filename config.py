@@ -5,7 +5,7 @@ import numpy as np
 path = 'model/frozen_inference_graph.pb'
 TRTbin = 'TRT_ssd_mobilenet_v2_coco_2018_03_29.bin'
 output_name = ['NMS']
-dims = [3,450,450]
+dims = [3,300,300]
 layout = 7
 
 def add_plugin(graph):
@@ -18,7 +18,7 @@ def add_plugin(graph):
     Input = gs.create_plugin_node(
         name="Input",
         op="Placeholder",
-        shape=[1, 3, 450, 450]
+        shape=[1, 3, 300, 300]
     )
 
     PriorBox = gs.create_plugin_node(
@@ -28,8 +28,8 @@ def add_plugin(graph):
         maxSize=0.95,
         aspectRatios=[1.0, 2.0, 0.5, 3.0, 0.33],
         variance=[0.1,0.1,0.2,0.2],
-        #featureMapShapes=[19, 10, 5, 3, 2, 1], # Resolution 300
-        featureMapShapes=[29, 15, 8, 4, 2, 1], # Resolution 450
+        featureMapShapes=[19, 10, 5, 3, 2, 1], # Resolution 300
+        #featureMapShapes=[29, 15, 8, 4, 2, 1], # Resolution 450
         numLayers=6
     )
 
